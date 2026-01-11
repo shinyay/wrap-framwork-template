@@ -1,0 +1,145 @@
+name: "WRAP R: Spec Kit → WRAP ブリッジ（R-only）"
+description: "Spec Kit の成果物を Atomic Issue として WRAP に投入できるよう、ルール/テンプレ/constitution を整備する"
+title: "[R][SpecKit] Spec Kit→WRAP ブリッジ整備（R-only）"
+# labels: ["wrap:R", "spec-kit"]  # ラベルが存在しないと自動付与されないため、運用が固まるまで省略推奨
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## この Issue は Step 1（R-only）です
+        - 目的：Spec Kit の成果物（Specify/Plan/Tasks）を **Atomic Issue（Copilot Task）** に落として WRAP で回すための「基準（ガードレール）」を repo に固定します。
+        - 禁止：アプリ機能の実装、無関係なリファクタ、不要な整形、依存追加（特別な理由がない限り）
+        - 期待：この Issue を Copilot coding agent に Assign すると **R-only PR** が作られる
+
+        > 重要：Issue フォームは default branch（通常 main）の `.github/ISSUE_TEMPLATE` にあるものだけが表示されます。
+
+  - type: input
+    id: pr_base_branch
+    attributes:
+      label: "PR の base branch（必須）"
+      description: "Copilot coding agent が PR を作るときの base。例: workshop/2026-01-11"
+      placeholder: "workshop/YYYY-MM-DD"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: spec_kit_status
+    attributes:
+      label: "Spec Kit の状態"
+      description: "このブランチに .specify/ があるかどうか"
+      options:
+        - "まだ無い（これから導入する）"
+        - "すでにある（specify init 済み）"
+        - "不明"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: deliverables
+    attributes:
+      label: "この PR で整備する成果物（Deliverables）"
+      description: "R-only の成果物に限定してください"
+      options:
+        - label: ".github/copilot-instructions.md を整備（WRAP + Spec Kit 連携ルール）"
+          required: true
+        - label: "AGENTS.md を整備（PR 形式 / 禁止事項 / 変更範囲 / テスト方針）"
+          required: true
+        - label: ".specify/memory/constitution.md を整備（Tasks の出力規約 / Atomic 規約 / TBD 方針）"
+          required: true
+        - label: ".specify/templates/* を調整（Tasks が Issue 化しやすい出力をする）"
+          required: false
+        - label: "docs/ に運用ドキュメント追加（Spec Kit→Issue→WRAP の手順）"
+          required: false
+        - label: "（任意）Issue テンプレ追加/更新（Copilot Task 側の項目強化など）"
+          required: false
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: "目的 / 背景（Why）"
+      description: "今の痛み・改善したいこと・成功条件を具体的に"
+      placeholder: |
+        例:
+        - Tasks の粒度が揃わず PR が肥大化する
+        - Issue にテスト手順や変更範囲が欠けて agent の出力がブレる
+        - Spec Kit の Tasks をそのまま Issue に落とせる形にしたい
+    validations:
+      required: true
+
+  - type: textarea
+    id: atomic_definition
+    attributes:
+      label: "Atomic の定義（必須）"
+      description: "この repo で「1 Task = 1 Issue = 1 PR」とするための基準"
+      placeholder: |
+        例:
+        - 1 PR で独立にレビュー・マージ可能
+        - 変更範囲（Change surface）が明確
+        - 受け入れ条件が検証可能
+        - テスト手順が PR 本文に含まれる（無理なら理由を明記）
+    validations:
+      required: true
+
+  - type: textarea
+    id: mapping_rules
+    attributes:
+      label: "Spec Kit Tasks → Copilot Task Issue のマッピング規約（必須）"
+      description: "Tasks を Issue 化する際に必ず含める項目を定義"
+      placeholder: |
+        必須項目（例）:
+        - Title（短く具体）
+        - Background/Goal
+        - Change surface（触る/触らない）
+        - Out of scope
+        - Acceptance criteria（検証可能）
+        - Test plan（コマンド + 手順）
+        - Risks/Assumptions/Dependencies
+    validations:
+      required: true
+
+  - type: textarea
+    id: constitution_draft
+    attributes:
+      label: "Constitution に追加したい条項案（任意だが推奨）"
+      description: "ここに書いたドラフトを .specify/memory/constitution.md に反映する"
+      placeholder: |
+        例:
+        - [NON-NEGOTIABLE] Tasks は必ず Issue 化できるフォーマットで出力する
+        - [NON-NEGOTIABLE] 未確定事項は推測せず、TBD/NEEDS-CLARIFICATION として残す
+        - [NON-NEGOTIABLE] 依存がある場合は Task を分割し、順序関係を明示する
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: "制約（守ること）"
+      options:
+        - label: "R-only（運用/指示/テンプレ/constitution のみ）"
+          required: true
+        - label: "無関係な変更（整形/リネーム/大規模リファクタ）をしない"
+          required: true
+        - label: "PR 本文に Summary / How to test / Risks & assumptions を含める"
+          required: true
+
+  - type: textarea
+    id: dod
+    attributes:
+      label: "受け入れ条件（DoD）"
+      placeholder: |
+        - ドキュメントと constitution により、以後の Tasks→Issue 化が迷わず行える
+        - Atomic の基準が明文化され、繰り返し指摘が R に吸収される状態になっている
+        - PR が R-only で、変更範囲が妥当
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "参考（任意）"
+      placeholder: |
+        - WRAP: https://github.blog/ai-and-ml/github-copilot/wrap-up-your-backlog-with-github-copilot-coding-agent/
+        - Spec Kit: https://github.com/github/spec-kit
+    validations:
+      required: false
+
